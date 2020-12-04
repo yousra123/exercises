@@ -1,0 +1,48 @@
+Sous linux : 
+
+1ère solution : 
+1. choisir un user autre que root 
+Je crée un nouvel utilisateur dans le shell mysql grâce à la commande:
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+
+J'exécute la commande qui permet à l'utilisateur de lire , modifier , exécuter et effectuer toutes tâches sur l'intégralité des bases de données et des tables.
+GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
+
+Je recharge les privilèges grâce à la commande : 
+FLUSH PRIVILEGES
+
+au niveau du shell , je tape la commande crontab -e afin de créer un fichier crontab 
+j'ajoute la ligne suivante au niveau du fichier 
+min h * * * mysqldump -u 'newuser' -p'password' userlogin > /home/user/db_`date +\%Y\%m\%d_\%H\%M\%S`.sql
+avec min et h la minute et l'heure à laquelle je veux faire une sauvegarde de la base de données .
+La sauvegarde de la base de données se fera au niveau du fichier sql cité dans la commande ci-dessus .
+
+2ème solution:
+On commence par installer automysqlbackup à l'aide de la commande
+sudo apt install automysqlbackup
+au niveau de postfix configuration on choisit l'option No configuration
+On se place au niveau de la base de données (db par exemple):
+cd /var/lib/automysqlbackup/daily/db 
+on fait ensuite ls:
+On pourra voir toutes les sauvegardes de la base de donnée effectuées journalièrement dans des fichiers db_`date`.sql.gz
+Pour obtenir le fichier correspondant à l'une des sauvegardes , on exécute la commande : 
+zless db_`date`.sql.gz 
+
+Sous windows:
+On se place dans le dossier contenant l'exécutable de mysqldump (xampp\mysql\bin)
+on crée un fichier batch dans ce dossier où on place la commande 
+mysqldump -uusername -ppassword DATABASE > "C:\users\user\Desktop\backup.sql"
+on peut choisir le chemin qu'on souhaite pour le fichier de sauvegarde
+On download l'exécutable SystemScheduler.exe qui va permettre de mettre à jour le fichier de sauvegarde 
+backup.sql toutes les minutes ou toutes les heures ou tous les jours (selon l'option qu'on choisit) . 
+
+
+
+
+
+
+
+
+
+
+
